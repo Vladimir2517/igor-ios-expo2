@@ -6,7 +6,10 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "scheme": "igor",
-    "ios": { "supportsTablet": false, "bundleIdentifier": "com.dvigay.igor" },
-    "extra": { "apiUrl": "https://YOUR-BACKEND-DOMAIN.example" }
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.dvigay.igor",
+      "buildNumber": "1"
+    }
   }
 }
