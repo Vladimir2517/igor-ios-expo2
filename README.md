@@ -1,24 +1,33 @@
-# Игорь — iPhone-приложение
+# Игорь — тестовое iPhone-приложение
 
-Нативный Expo-проект для сборки через EAS/TestFlight.
+Первая тестовая версия приложения. Она работает полностью локально и пока не требует backend, API-ключей или подключения AI.
 
-Перед сборкой замени `API_URL` в `App.js` и `extra.apiUrl` в `app.json` на адрес опубликованного backend-сервера.
+## Что проверяем
 
-## Локальный запуск
+- приложение запускается на iPhone;
+- интерфейс корректно отображается;
+- поле ввода и кнопка отправки работают;
+- после сообщения появляется локальный тестовый ответ Игоря.
+
+## Локальный запуск через Expo Go
 
 ```bash
 npm install
 npx expo start
 ```
 
-## Сборка через EAS
+После запуска открой Expo Go на iPhone и отсканируй QR-код.
+
+## Тестовая iOS-сборка через EAS
 
 ```bash
 npm install
 npx eas login
-npx eas build:configure
-npx eas build --platform ios --profile production
-npx eas submit --platform ios --profile production
+npx eas build --platform ios --profile preview
 ```
 
-EAS попросит войти в Apple Developer и создаст необходимые сертификаты/профили. Пароли и коды вводятся только в официальных окнах Expo/Apple.
+Профиль `preview` предназначен для внутренней тестовой установки. Для установки standalone-сборки на физический iPhone EAS может запросить регистрацию устройства и Apple Developer credentials.
+
+## Следующий этап
+
+После проверки установки подключаем настоящий backend и постепенно добавляем GPT, Claude, DeepSeek, память и остальные функции.
