@@ -33,16 +33,15 @@ jobs:
           set -euxo pipefail
           WORKSPACE=$(find . -maxdepth 1 -name "*.xcworkspace" -print -quit)
           SCHEME="Igor"
-          rm -rf "$RUNNER_TEMP/IgorDerivedData" "$RUNNER_TEMP/IgorProducts"
-          mkdir -p "$RUNNER_TEMP/IgorProducts"
-          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release -sdk iphoneos -derivedDataPath "$RUNNER_TEMP/IgorDerivedData" CONFIGURATION_BUILD_DIR="$RUNNER_TEMP/IgorProducts" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+          rm -rf "$RUNNER_TEMP/IgorDerivedData"
+          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release -sdk iphoneos -derivedDataPath "$RUNNER_TEMP/IgorDerivedData" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
           echo "Build products:"
-          find "$RUNNER_TEMP/IgorProducts" -maxdepth 2 -print
+          find "$RUNNER_TEMP/IgorDerivedData/Build/Products" -maxdepth 3 -print
 
       - name: Package IPA
         run: |
           set -euxo pipefail
-          APP=$(find "$RUNNER_TEMP/IgorProducts" -maxdepth 1 -type d -name "*.app" -print -quit)
+          APP=$(find "$RUNNER_TEMP/IgorDerivedData/Build/Products/Release-iphoneos" -maxdepth 1 -type d -name "*.app" -print -quit)
           echo "Found app: $APP"
           test -n "$APP"
           rm -rf Payload Igor-unsigned.ipa
