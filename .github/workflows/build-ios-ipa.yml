@@ -37,12 +37,20 @@ jobs:
       - name: Package IPA
         working-directory: ios
         run: |
-          APP=$(find build/Build/Products -type d -name "*.app" -not -path "*/Pods.build/*" -print -quit)\n          echo "Found app: $APP"
+          set -euxo pipefail
+          APP=$(find build -type d -name "*.app" -not -path "*/Intermediates.noindex/*" -not -path "*/Pods.build/*" -print -quit)
+          if [ -z "$APP" ]; then
+            echo "No .app under ios/build. Searching repository..."
+            APP=$(find .. -type d -name "*.app" -not -path "*/node_modules/*" -not -path "*/Pods.build/*" -print -quit)
+          fi
+          echo "Found app: $APP"
           test -n "$APP"
           rm -rf Payload Igor-unsigned.ipa
           mkdir Payload
           cp -R "$APP" Payload/
-          zip -qry Igor-unsigned.ipa Payload
+          /usr/bin/zip -qry Igor-unsigned.ipa Payload
+          ls -lh Igor-unsigned.ipa
+
       - uses: actions/upload-artifact@v4
         with:
           name: Igor-unsigned-ipa
