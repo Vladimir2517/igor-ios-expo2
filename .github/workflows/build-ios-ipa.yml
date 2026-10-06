@@ -32,7 +32,7 @@ jobs:
         run: |
           set -euxo pipefail
           WORKSPACE=$(find . -maxdepth 1 -name "*.xcworkspace" -print -quit)
-          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["workspace"]["schemes"][0])')
+          SCHEME="Igor"
           rm -rf "$RUNNER_TEMP/IgorDerivedData" "$RUNNER_TEMP/IgorProducts"
           mkdir -p "$RUNNER_TEMP/IgorProducts"
           xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release -sdk iphoneos -derivedDataPath "$RUNNER_TEMP/IgorDerivedData" CONFIGURATION_BUILD_DIR="$RUNNER_TEMP/IgorProducts" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
