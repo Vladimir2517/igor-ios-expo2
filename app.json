@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Игорь",
+    "slug": "igor-ai",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "igor",
+    "ios": { "supportsTablet": false, "bundleIdentifier": "com.dvigay.igor" },
+    "extra": { "apiUrl": "https://YOUR-BACKEND-DOMAIN.example" }
+  }
+}
