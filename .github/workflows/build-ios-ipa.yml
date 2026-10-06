@@ -30,29 +30,31 @@ jobs:
       - name: Build unsigned app
         working-directory: ios
         run: |
-          set -o pipefail
+          set -euxo pipefail
           WORKSPACE=$(find . -maxdepth 1 -name "*.xcworkspace" -print -quit)
           SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["workspace"]["schemes"][0])')
-          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+          rm -rf "$RUNNER_TEMP/IgorDerivedData" "$RUNNER_TEMP/IgorProducts"
+          mkdir -p "$RUNNER_TEMP/IgorProducts"
+          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release -sdk iphoneos -derivedDataPath "$RUNNER_TEMP/IgorDerivedData" CONFIGURATION_BUILD_DIR="$RUNNER_TEMP/IgorProducts" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+          echo "Build products:"
+          find "$RUNNER_TEMP/IgorProducts" -maxdepth 2 -print
+
       - name: Package IPA
-        working-directory: ios
         run: |
           set -euxo pipefail
-          APP=$(find build -type d -name "*.app" -not -path "*/Intermediates.noindex/*" -not -path "*/Pods.build/*" -print -quit)
-          if [ -z "$APP" ]; then
-            echo "No .app under ios/build. Searching repository..."
-            APP=$(find .. -type d -name "*.app" -not -path "*/node_modules/*" -not -path "*/Pods.build/*" -print -quit)
-          fi
+          APP=$(find "$RUNNER_TEMP/IgorProducts" -maxdepth 1 -type d -name "*.app" -print -quit)
           echo "Found app: $APP"
           test -n "$APP"
           rm -rf Payload Igor-unsigned.ipa
           mkdir Payload
           cp -R "$APP" Payload/
           /usr/bin/zip -qry Igor-unsigned.ipa Payload
+          test -s Igor-unsigned.ipa
+          unzip -l Igor-unsigned.ipa | head -40
           ls -lh Igor-unsigned.ipa
 
       - uses: actions/upload-artifact@v4
         with:
           name: Igor-unsigned-ipa
-          path: ios/Igor-unsigned.ipa
+          path: Igor-unsigned.ipa
           if-no-files-found: error
