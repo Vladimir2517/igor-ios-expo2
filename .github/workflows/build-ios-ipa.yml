@@ -37,7 +37,7 @@ jobs:
       - name: Package IPA
         working-directory: ios
         run: |
-          APP=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name "*.app" -print -quit)
+          APP=$(find build/Build/Products -type d -name "*.app" -not -path "*/Pods.build/*" -print -quit)\n          echo "Found app: $APP"
           test -n "$APP"
           rm -rf Payload Igor-unsigned.ipa
           mkdir Payload
